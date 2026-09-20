@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌻 Galaxia de Flores Amarillas 3D</title>
+
+<style>
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000008;
+    }
+
+    canvas {
+        display: block;
+    }
+
+    #titulo {
+        position: fixed;
+        top: 20px;
+        width: 100%;
+        text-align: center;
+        color: #ffe44d;
+        font-family: Arial, sans-serif;
+        font-size: 22px;
+        text-shadow: 0 0 15px #ffb300;
+        pointer-events: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="titulo">🌻 GALAXIA DE FLORES AMARILLAS 🌌</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+// --------------------------------------------------
+// ESCENA
+// --------------------------------------------------
+
+const escena = new THREE.Scene();
+
+escena.background = new THREE.Color(0x000008);
+
+const camara = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    2000
+);
+
+camara.position.set(0, 35, 90);
+
+const renderizador = new THREE.WebGLRenderer({
+    antialias: true
+});
+
+renderizador.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+);
+
+renderizador.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
+
+document.body.appendChild(renderizador.domElement);
+
+// --------------------------------------------------
+// CONTROLES
+// --------------------------------------------------
+
+const controles = new OrbitControls(
+    camara,
+    renderizador.domElement
+);
+
+controles.enableDamping = true;
+controles.dampingFactor = 0.04;
+controles.autoRotate = true;
+controles.autoRotateSpeed = 0.25;
+
+// --------------------------------------------------
+// LUCES
+// --------------------------------------------------
+
+const luz = new THREE.PointLight(
+    0xffcc33,
+    80,
+    250
+);
+
+luz.position.set(0, 0, 0);
+escena.add(luz);
+
+const luzAmbiente = new THREE.AmbientLight(
+    0x332200,
+    1.5
+);
+
+escena.add(luzAmbiente);
+
+// --------------------------------------------------
+// CENTRO DE LA GALAXIA
+// --------------------------------------------------
+
+const centro = new THREE.Mesh(
+    new THREE.SphereGeometry(5, 32, 32),
+    new THREE.MeshBasicMaterial({
+        color: 0xffdd55
+    })
+);
+
+escena.add(centro);
+
+// Halo luminoso
+
+const halo = new THREE.Mesh(
+    new THREE.SphereGeometry(9, 32, 32),
+    new THREE.MeshBasicMaterial({
+        color: 0xff9900,
+        transparent: true,
+        opacity: 0.12,
+        blending: THREE.AdditiveBlending
+    })
+);
+
+escena.add(halo);
+
+// --------------------------------------------------
+// ESTRELLAS DE FONDO
+// --------------------------------------------------
+
+const estrellasGeometria =
+    new THREE.BufferGeometry();
+
+const estrellasCantidad = 5000;
+
+const posiciones = new Float32Array(
+    estrellasCantidad * 3
+);
+
+for (let i = 0; i < estrellasCantidad; i++) {
+
+    const radio = 300 + Math.random() * 700;
+
+    const theta =
+        Math.random() * Math.PI * 2;
+
+    const phi =
+        Math.acos(2 * Math.random() - 1);
+
+    posiciones[i * 3] =
+        radio * Math.sin(phi) * Math.cos(theta);
+
+    posiciones[i * 3 + 1] =
+        radio * Math.cos(phi);
+
+    posiciones[i * 3 + 2] =
+        radio * Math.sin(phi) * Math.sin(theta);
+}
+
+estrellasGeometria.setAttribute(
+    "position",
+    new THREE.BufferAttribute(posiciones, 3)
+);
+
+const estrellasMaterial =
+    new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.8,
+        transparent: true,
+        opacity: 0.8
+    });
+
+const estrellas = new THREE.Points(
+    estrellasGeometria,
+    estrellasMaterial
+);
+
+escena.add(estrellas);
+
+// --------------------------------------------------
+// FLORES
+// --------------------------------------------------
+
+const galaxia = new THREE.Group();
+
+escena.add(galaxia);
+
+const cantidadFlores = 2200;
+
+// Crear una flor sencilla
+function crearFlor(tamaño) {
+
+    const grupo = new THREE.Group();
+
+    // Pétalos
+    for (let p = 0; p < 8; p++) {
+
+        const angulo =
+            (Math.PI * 2 / 8) * p;
+
+        const petalo = new THREE.Mesh(
+            new THREE.SphereGeometry(
+                tamaño * 0.28,
+                8,
+                8
+            ),
+            new THREE.MeshBasicMaterial({
+                color: 0xffd21f
+            })
+        );
+
+        petalo.scale.set(
+            0.6,
+            1.5,
+            0.35
+        );
+
+        petalo.position.x =
+            Math.cos(angulo) * tamaño * 0.35;
+
+        petalo.position.z =
+            Math.sin(angulo) * tamaño * 0.35;
+
+        petalo.rotation.y =
+            -angulo;
+
+        grupo.add(petalo);
+    }
+
+    // Centro marrón
+    const centroFlor = new THREE.Mesh(
+        new THREE.SphereGeometry(
+            tamaño * 0.18,
+            8,
+            8
+        ),
+        new THREE.MeshBasicMaterial({
+            color: 0x8b4a00
+        })
+    );
+
+    grupo.add(centroFlor);
+
+    return grupo;
+}
+
+// --------------------------------------------------
+// DISTRIBUCIÓN ESPIRAL
+// --------------------------------------------------
+
+for (let i = 0; i < cantidadFlores; i++) {
+
+    const brazo =
+        i % 5;
+
+    const radio =
+        8 + Math.random() * 90;
+
+    const espiral =
+        radio * 0.075;
+
+    const angulo =
+        espiral +
+        brazo * (Math.PI * 2 / 5) +
+        (Math.random() - 0.5) * 0.45;
+
+    const x =
+        Math.cos(angulo) * radio;
+
+    const z =
+        Math.sin(angulo) * radio;
+
+    // Grosor del disco
+    const y =
+        (Math.random() - 0.5) *
+        (3 + radio * 0.04);
+
+    const tamaño =
+        0.12 +
+        Math.random() * 0.28;
+
+    const flor =
+        crearFlor(tamaño);
+
+    flor.position.set(
+        x,
+        y,
+        z
+    );
+
+    // Variación natural
+    flor.rotation.x =
+        Math.random() * Math.PI;
+
+    flor.rotation.y =
+        Math.random() * Math.PI;
+
+    flor.rotation.z =
+        Math.random() * Math.PI;
+
+    galaxia.add(flor);
+}
+
+// --------------------------------------------------
+// POLVO GALÁCTICO
+// --------------------------------------------------
+
+const polvoGeo =
+    new THREE.BufferGeometry();
+
+const polvoCantidad = 7000;
+
+const polvoPos =
+    new Float32Array(
+        polvoCantidad * 3
+    );
+
+for (let i = 0; i < polvoCantidad; i++) {
+
+    const radio =
+        Math.random() * 100;
+
+    const angulo =
+        Math.random() * Math.PI * 2;
+
+    polvoPos[i * 3] =
+        Math.cos(angulo) * radio;
+
+    polvoPos[i * 3 + 1] =
+        (Math.random() - 0.5) *
+        2;
+
+    polvoPos[i * 3 + 2] =
+        Math.sin(angulo) * radio;
+}
+
+polvoGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        polvoPos,
+        3
+    )
+);
+
+const polvoMat =
+    new THREE.PointsMaterial({
+        color: 0xffaa22,
+        size: 0.12,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending
+    });
+
+const polvo =
+    new THREE.Points(
+        polvoGeo,
+        polvoMat
+    );
+
+galaxia.add(polvo);
+
+// --------------------------------------------------
+// ANIMACIÓN
+// --------------------------------------------------
+
+function animar() {
+
+    requestAnimationFrame(animar);
+
+    const tiempo =
+        performance.now() * 0.0001;
+
+    // Rotación de la galaxia
+    galaxia.rotation.y =
+        tiempo * 0.8;
+
+    centro.rotation.y =
+        tiempo * 2;
+
+    halo.scale.setScalar(
+        1 +
+        Math.sin(tiempo * 10) * 0.04
+    );
+
+    estrellas.rotation.y =
+        tiempo * 0.03;
+
+    controles.update();
+
+    renderizador.render(
+        escena,
+        camara
+    );
+}
+
+animar();
+
+// --------------------------------------------------
+// REDIMENSIONAR
+// --------------------------------------------------
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        camara.aspect =
+            window.innerWidth /
+            window.innerHeight;
+
+        camara.updateProjectionMatrix();
+
+        renderizador.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);
+
+</script>
+
+</body>
+</html>
