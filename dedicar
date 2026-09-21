@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para alguien especial ❤️</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #ff758c, #ff7eb3, #c471ed);
+            overflow: hidden;
+        }
+
+        .contenedor {
+            width: 90%;
+            max-width: 650px;
+            padding: 45px 30px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .corazon {
+            font-size: 70px;
+            animation: latido 1.3s infinite;
+        }
+
+        @keyframes latido {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        h1 {
+            margin: 15px 0;
+            font-size: 38px;
+        }
+
+        .nombre {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 25px;
+        }
+
+        .frase {
+            min-height: 90px;
+            font-size: 22px;
+            line-height: 1.6;
+            font-style: italic;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            background: white;
+            color: #e84373;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .firma {
+            margin-top: 30px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Corazones flotando */
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 25px;
+            animation: subir 8s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes subir {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .heart:nth-child(1) {
+            left: 10%;
+            animation-delay: 1s;
+        }
+
+        .heart:nth-child(2) {
+            left: 25%;
+            animation-delay: 3s;
+        }
+
+        .heart:nth-child(3) {
+            left: 45%;
+            animation-delay: 5s;
+        }
+
+        .heart:nth-child(4) {
+            left: 65%;
+            animation-delay: 2s;
+        }
+
+        .heart:nth-child(5) {
+            left: 85%;
+            animation-delay: 4s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Corazones -->
+    <div class="heart">❤️</div>
+    <div class="heart">💕</div>
+    <div class="heart">💗</div>
+    <div class="heart">💖</div>
+    <div class="heart">❤️</div>
+
+    <div class="contenedor">
+
+        <div class="corazon">❤️</div>
+
+        <h1>Para ti</h1>
+
+        <!-- CAMBIA EL NOMBRE AQUÍ -->
+        <div class="nombre">
+            Mi persona especial ✨
+        </div>
+
+        <div class="frase" id="frase">
+            "Hay personas que llegan a nuestra vida
+            y sin darse cuenta se convierten en una
+            de las partes más bonitas de ella."
+        </div>
+
+        <button onclick="cambiarFrase()">
+            💌 Otra frase
+        </button>
+
+        <div class="firma">
+            Con mucho cariño, para ti ❤️
+        </div>
+
+    </div>
+
+    <script>
+
+        const frases = [
+            "Eres una de esas personas que hacen que los días normales se vuelvan especiales. ❤️",
+
+            "No sé qué tiene tu forma de ser, pero siempre consigues sacar una sonrisa de mí. 😊",
+
+            "Si pudiera elegir un lugar donde estar ahora mismo, probablemente sería a tu lado. 💕",
+
+            "Gracias por existir y por hacer más bonito mi mundo simplemente siendo tú. ✨",
+
+            "Hay sonrisas que se quedan en la memoria... y la tuya es una de ellas. ❤️",
+
+            "No necesito un día especial para decirte lo mucho que significas para mí. 💖",
+
+            "Ojalá nunca olvides lo especial que eres para alguien que piensa en ti más de lo que imaginas. 🥰",
+
+            "Entre tantas personas en el mundo, qué bonito fue coincidir contigo. 🌎❤️",
+
+            "Tal vez no te lo digo siempre, pero me encanta tenerte en mi vida. 💗",
+
+            "Si la felicidad tuviera un nombre, probablemente tendría un poquito del tuyo. ✨"
+        ];
+
+        let indice = 0;
+
+        function cambiarFrase() {
+
+            indice++;
+
+            if (indice >= frases.length) {
+                indice = 0;
+            }
+
+            document.getElementById("frase").style.opacity = 0;
+
+            setTimeout(() => {
+                document.getElementById("frase").textContent = frases[indice];
+                document.getElementById("frase").style.opacity = 1;
+            }, 300);
+        }
+
+    </script>
+
+</body>
+</html>
